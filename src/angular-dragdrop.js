@@ -40,7 +40,8 @@ var jqyoui = angular.module('ngDragDrop', []).service('ngDragDropService', ['$ti
           args = [event, ui].concat(objExtract.args);
       
       // call either $scoped method i.e. $scope.dropCallback or constructor's method i.e. this.dropCallback
-      scope.$apply((scope[callback] || scope[constructor][callback]).apply(scope, args));
+      //scope.$apply((scope[callback] || scope[constructor][callback]).apply(scope, args));
+      return scope[callback].apply(scope, args);
       
       function extract(callbackName) {
         var atStartBracket = callbackName.indexOf('(') !== -1 ? callbackName.indexOf('(') : callbackName.length,
@@ -257,14 +258,14 @@ var jqyoui = angular.module('ngDragDrop', []).service('ngDragDropService', ['$ti
                   zIndex = angular.element(jqyouiOptions.helper ? ui.helper : this).css('z-index');
                   angular.element(jqyouiOptions.helper ? ui.helper : this).css('z-index', 9999);
                   jqyoui.startXY = angular.element(this)[dragSettings.containment || 'offset']();
-                  ngDragDropService.callEventCallback(scope, dragSettings.onStart, event, ui);
+                  return ngDragDropService.callEventCallback(scope, dragSettings.onStart, event, ui);
                 },
                 stop: function(event, ui) {
                   angular.element(jqyouiOptions.helper ? ui.helper : this).css('z-index', zIndex);
-                  ngDragDropService.callEventCallback(scope, dragSettings.onStop, event, ui);
+                  return ngDragDropService.callEventCallback(scope, dragSettings.onStop, event, ui);
                 },
                 drag: function(event, ui) {
-                  ngDragDropService.callEventCallback(scope, dragSettings.onDrag, event, ui);
+                  return ngDragDropService.callEventCallback(scope, dragSettings.onDrag, event, ui);
                 }
               });
           } else {
